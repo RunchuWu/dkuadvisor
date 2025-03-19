@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 const ChatInput: React.FC = () => {
   const [input, setInput] = useState('');
-  const { addMessage, isMessageLoading, setIsMessageLoading } = useChatContext();
+  const { addMessage, isMessageLoading, setIsMessageLoading, generateAIResponse } = useChatContext();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [apiKey, setApiKey] = useState<string>(localStorage.getItem('deepseekApiKey') || '');
   const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(!localStorage.getItem('deepseekApiKey'));
@@ -26,37 +26,6 @@ const ChatInput: React.FC = () => {
     adjustTextareaHeight();
   }, [input]);
 
-  const callDeepseekAPI = async (message: string) => {
-    try {
-      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages: [
-            { role: 'user', content: message }
-          ],
-          temperature: 0.7,
-          max_tokens: 1000
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || 'Failed to get response from DeepSeek API');
-      }
-
-      const data = await response.json();
-      return data.choices[0].message.content;
-    } catch (error) {
-      console.error('Error calling DeepSeek API:', error);
-      throw error;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedInput = input.trim();
@@ -73,11 +42,11 @@ const ChatInput: React.FC = () => {
     addMessage(trimmedInput, 'user');
     setInput('');
 
-    // Get AI response
+    // Get AI response using RAG
     setIsMessageLoading(true);
     
     try {
-      const aiResponse = await callDeepseekAPI(trimmedInput);
+      const aiResponse = await generateAIResponse(trimmedInput);
       addMessage(aiResponse, 'assistant');
     } catch (error) {
       toast.error((error as Error).message || "Failed to get response from DeepSeek");
@@ -145,7 +114,7 @@ const ChatInput: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask anything..."
+            placeholder="Ask about DKU courses..."
             className="flex-1 resize-none overflow-hidden bg-white border border-assistant-border rounded-lg py-3 pl-4 pr-12 focus:outline-none focus:ring-1 focus:ring-assistant-accent focus:border-assistant-accent transition-shadow text-sm min-h-[52px] max-h-[200px]"
             rows={1}
           />
@@ -180,7 +149,7 @@ const ChatInput: React.FC = () => {
         </div>
         
         <p className="text-xs text-assistant-placeholder text-center mt-2">
-          AI can make mistakes. Verify important information.
+          AI can make mistakes. Verify important course information.
         </p>
       </form>
     </div>

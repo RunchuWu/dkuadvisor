@@ -5,6 +5,7 @@ import ChatSidebar from '@/components/ChatSidebar';
 import ChatHeader from '@/components/ChatHeader';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
+import PDFUploader from '@/components/PDFUploader';
 import { Loader2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -23,10 +24,10 @@ const ChatInterface: React.FC = () => {
 
   // Suggestions for quick prompts
   const suggestions = [
-    "Tell me about registration schedules",
-    "Dance courses",
-    "A class about nutrition",
-    "Intro computer science class"
+    "What courses are available for Computer Science?",
+    "Tell me about Data Science major requirements",
+    "Are there any courses on AI and Machine Learning?",
+    "What humanities electives are available?"
   ];
   
   // Auto-scroll to bottom when messages change
@@ -85,10 +86,14 @@ const ChatInterface: React.FC = () => {
                 <DukeLogo className="mb-8" />
               ) : null}
               
-              <h2 className="text-3xl font-duke font-bold mb-2 animate-fade-in text-duke-blue">How can I help you today?</h2>
+              <h2 className="text-3xl font-duke font-bold mb-2 animate-fade-in text-duke-blue">DKU Course Advisor</h2>
               <p className="text-assistant-placeholder mb-6 max-w-md animate-fade-in">
-                Ask me anything about Duke University or start a conversation. I'm here to assist with information, ideas, and more.
+                Ask me anything about courses at Duke Kunshan University. Upload a course catalog PDF to enhance my knowledge.
               </p>
+              
+              <div className="mb-8 w-full max-w-md animate-fade-in">
+                <PDFUploader />
+              </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl animate-fade-in">
                 {suggestions.map((suggestion, index) => (
