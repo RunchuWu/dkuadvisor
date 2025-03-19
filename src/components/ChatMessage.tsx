@@ -82,9 +82,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         </div>
         
         <div className="flex-1 prose dark:prose-invert">
-          <div 
-            className="text-duke-text dark:text-gray-200 leading-relaxed"
-          >
+          <div className="text-duke-text dark:text-gray-200 leading-relaxed">
             {formatContent(message.content)}
           </div>
         </div>
