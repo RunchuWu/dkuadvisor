@@ -38,7 +38,7 @@ const FloatingRecommendations: React.FC = () => {
         <button
           key={recommendation.id}
           onClick={() => handleRecommendationClick(recommendation.text)}
-          className="floating-card text-center cursor-pointer hover:shadow-md"
+          className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 animate-float-up"
           style={{ 
             animationDelay: recommendation.delay,
             animationDuration: `${3 + (recommendation.id % 2) * 0.5}s`
