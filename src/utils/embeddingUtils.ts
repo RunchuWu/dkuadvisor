@@ -40,7 +40,7 @@ export async function createEmbedding(text: string): Promise<number[]> {
   try {
     const model = await getEmbeddingModel();
     const embeddings = await model(text, { pooling: 'mean', normalize: true });
-    return embeddings.tolist()[0];
+    return Array.isArray(embeddings) ? embeddings[0] : embeddings.tolist()[0];
   } catch (error) {
     console.error('Error creating embedding:', error);
     throw new Error('Failed to create embedding');

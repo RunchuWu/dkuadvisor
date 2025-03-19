@@ -1,10 +1,9 @@
 
-import * as pdfjs from 'pdfjs-dist';
+import { getDocument, GlobalWorkerOptions, PDFDocumentProxy } from 'pdfjs-dist';
 import { TextItem } from 'pdfjs-dist/types/src/display/api';
 
-// Initialize pdf.js
-const pdfjsLib = await import('pdfjs-dist');
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set the worker source
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${(window as any).pdfjsLib?.version || '3.11.174'}/pdf.worker.min.js`;
 
 export interface DocumentChunk {
   text: string;
@@ -17,7 +16,7 @@ export interface DocumentChunk {
 export async function parsePdf(file: File): Promise<DocumentChunk[]> {
   try {
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await getDocument({ data: arrayBuffer }).promise;
     
     const chunks: DocumentChunk[] = [];
     const numPages = pdf.numPages;
