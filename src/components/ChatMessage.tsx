@@ -62,20 +62,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     <div 
       className={cn(
         "py-5 px-4 md:px-8 lg:px-16 flex animate-fade-in",
-        isUser ? "bg-white" : "bg-assistant-light"
+        isUser ? "bg-white" : "bg-gray-50"
       )}
     >
       <div className="max-w-3xl w-full mx-auto flex gap-4 md:gap-6">
         <div className={cn(
           "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
-          isUser ? "bg-primary/10 text-primary" : "bg-assistant-accent text-white"
+          isUser ? "bg-gray-200 text-duke-blue" : "bg-duke-blue text-white"
         )}>
           {isUser ? <User size={16} /> : <Bot size={16} />}
         </div>
         
         <div className="flex-1 prose">
           <div 
-            className="text-assistant-text leading-relaxed"
+            className="text-duke-text leading-relaxed"
           >
             {formatContent(message.content)}
           </div>

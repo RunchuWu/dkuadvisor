@@ -71,6 +71,13 @@ export default {
                     hover: '#f0f0f0',
                     text: '#343541',
                     placeholder: '#8e8ea0'
+                },
+                duke: {
+                    blue: '#012169', // Duke Blue color
+                    grey: '#F5F5F5',
+                    light: '#FFFFFF',
+                    text: '#333333',
+                    accent: '#C84E00'  // A complementary accent color
                 }
 			},
 			borderRadius: {
@@ -114,7 +121,10 @@ export default {
                 'fade-in': 'fade-in 0.3s ease-out',
                 'slide-up': 'slide-up 0.3s ease-out',
                 'pulse-slight': 'pulse-slight 1.5s infinite'
-			}
+			},
+            fontFamily: {
+                'duke': ['Georgia', 'serif'],
+            }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
