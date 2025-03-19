@@ -11,6 +11,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import DukeLogo from '@/components/DukeLogo';
 import DukeRobot from '@/components/DukeRobot';
+import DarkModeToggle from '@/components/DarkModeToggle';
+import FloatingRecommendations from '@/components/FloatingRecommendations';
 
 const ChatInterface: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,14 +23,6 @@ const ChatInterface: React.FC = () => {
   // Find current conversation and its messages
   const currentConversation = conversations.find(c => c.id === currentConversationId);
   const messages = currentConversation?.messages || [];
-
-  // Suggestions for quick prompts
-  const suggestions = [
-    "What courses are available for Computer Science?",
-    "Tell me about Data Science major requirements",
-    "Are there any courses on AI and Machine Learning?",
-    "What humanities electives are available?"
-  ];
   
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -54,9 +48,12 @@ const ChatInterface: React.FC = () => {
       />
       
       <main className={cn(
-        "flex-1 flex flex-col h-screen relative bg-white transition-all duration-300",
-        // Remove the margin-left that was creating the white space
+        "flex-1 flex flex-col h-screen relative bg-white dark:bg-background transition-all duration-300",
       )}>
+        <div className="absolute top-4 right-16 z-10">
+          <DarkModeToggle />
+        </div>
+        
         <ChatHeader setIsSidebarOpen={setIsSidebarOpen} />
         
         <div className="flex-1 overflow-y-auto thin-scrollbar">
@@ -73,7 +70,7 @@ const ChatInterface: React.FC = () => {
                       <Loader2 size={16} className="animate-spin" />
                     </div>
                     <div className="flex-1">
-                      <div className="h-6 bg-assistant-light/50 rounded-md w-16 animate-pulse-slight"></div>
+                      <div className="h-6 bg-assistant-light/50 dark:bg-gray-700/50 rounded-md w-16 animate-pulse-slight"></div>
                     </div>
                   </div>
                 </div>
@@ -86,8 +83,8 @@ const ChatInterface: React.FC = () => {
                 <DukeLogo className="mb-8" />
               ) : null}
               
-              <h2 className="text-3xl font-duke font-bold mb-2 animate-fade-in text-duke-blue">DKU Course Advisor</h2>
-              <p className="text-assistant-placeholder mb-6 max-w-md animate-fade-in">
+              <h2 className="text-3xl font-duke font-bold mb-2 animate-fade-in text-duke-blue dark:text-blue-400">DKU Course Advisor</h2>
+              <p className="text-assistant-placeholder dark:text-gray-400 mb-6 max-w-md animate-fade-in">
                 Ask me anything about courses at Duke Kunshan University. Upload a course catalog PDF to enhance my knowledge.
               </p>
               
@@ -95,17 +92,7 @@ const ChatInterface: React.FC = () => {
                 <PDFUploader />
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl animate-fade-in">
-                {suggestions.map((suggestion, index) => (
-                  <button 
-                    key={index}
-                    className="duke-suggestion-card text-left transition-colors text-sm text-gray-700"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
+              <FloatingRecommendations />
             </div>
           )}
         </div>

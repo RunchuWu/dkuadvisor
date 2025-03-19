@@ -40,7 +40,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           {inlineParts.map((inlinePart, i) => {
             if (inlinePart.startsWith('`') && inlinePart.endsWith('`')) {
               return (
-                <code key={i} className="bg-gray-100 text-assistant-text px-1 rounded font-mono text-sm">
+                <code key={i} className="bg-gray-100 dark:bg-gray-800 text-assistant-text dark:text-gray-300 px-1 rounded font-mono text-sm">
                   {inlinePart.slice(1, -1)}
                 </code>
               );
@@ -62,20 +62,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     <div 
       className={cn(
         "py-5 px-4 md:px-8 lg:px-16 flex animate-fade-in",
-        isUser ? "bg-white" : "bg-gray-50"
+        isUser 
+          ? "bg-white dark:bg-gray-900" 
+          : "bg-gray-50 dark:bg-gray-800/50"
       )}
     >
       <div className="max-w-3xl w-full mx-auto flex gap-4 md:gap-6">
         <div className={cn(
           "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
-          isUser ? "bg-gray-200 text-duke-blue" : "bg-duke-blue text-white"
+          isUser 
+            ? "bg-gray-200 dark:bg-gray-700 text-duke-blue dark:text-blue-400" 
+            : "bg-duke-blue dark:bg-blue-700 text-white"
         )}>
           {isUser ? <User size={16} /> : <Bot size={16} />}
         </div>
         
-        <div className="flex-1 prose">
+        <div className="flex-1 prose dark:prose-invert">
           <div 
-            className="text-duke-text leading-relaxed"
+            className="text-duke-text dark:text-gray-200 leading-relaxed"
           >
             {formatContent(message.content)}
           </div>
