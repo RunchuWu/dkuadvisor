@@ -39,15 +39,15 @@ const ChatSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }
           if (isMobile) setIsSidebarOpen(false);
         }}
         className={cn(
-          "w-full text-left px-3 py-3 rounded-md transition-all duration-200 group flex items-start mb-1",
+          "w-full text-left px-3 py-2 rounded-md transition-all duration-200 group flex items-start mb-1",
           isActive 
             ? "bg-assistant-accent/10 text-assistant-accent hover:bg-assistant-accent/15" 
             : "hover:bg-assistant-hover text-assistant-text"
         )}
       >
-        <MessageSquare size={18} className="mr-2 mt-0.5 flex-shrink-0" />
+        <MessageSquare size={16} className="mr-2 mt-0.5 flex-shrink-0" />
         <div className="flex flex-col overflow-hidden">
-          <span className="font-medium truncate">{conversation.title}</span>
+          <span className="font-medium truncate text-sm">{conversation.title}</span>
           <span className="text-xs opacity-60">{formatDate(conversation.timestamp)}</span>
         </div>
       </button>
@@ -62,17 +62,17 @@ const ChatSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }
       isMobile ? "animate-fade-in" : ""
     )}>
       <aside className={cn(
-        "h-full w-[280px] bg-sidebar flex flex-col border-r border-assistant-border animate-slide-up",
+        "h-full w-[240px] bg-sidebar flex flex-col border-r border-assistant-border animate-slide-up",
         isMobile ? "absolute" : "relative"
       )}>
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between p-3">
           <Button 
             variant="ghost" 
             className="p-2 h-auto hover:bg-assistant-hover rounded-md"
             onClick={createNewConversation}
           >
             <span className="flex items-center gap-2 text-sm font-medium">
-              <PenSquare size={16} />
+              <PenSquare size={14} />
               New chat
             </span>
           </Button>
@@ -81,16 +81,16 @@ const ChatSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-2 h-auto"
+              className="p-1 h-auto"
               onClick={() => setIsSidebarOpen(false)}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={16} />
             </Button>
           )}
         </div>
         
-        <div className="flex-1 overflow-y-auto thin-scrollbar px-2 py-2">
-          <div className="mb-4">
+        <div className="flex-1 overflow-y-auto thin-scrollbar px-2 py-1">
+          <div className="mb-3">
             <h3 className="text-xs font-medium text-assistant-placeholder uppercase tracking-wider px-3 py-1">Recent conversations</h3>
             {conversations.length > 0 ? (
               conversations.map(conversation => (
@@ -105,20 +105,20 @@ const ChatSidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }
           </div>
         </div>
         
-        <div className="border-t border-assistant-border p-4">
+        <div className="border-t border-assistant-border p-3">
           <Button 
             variant="outline" 
-            className="w-full justify-start text-assistant-text mb-2"
+            className="w-full justify-start text-assistant-text mb-2 text-xs h-8"
           >
-            <Clock size={16} className="mr-2" />
-            <span className="text-sm">Previous 30 Days</span>
+            <Clock size={14} className="mr-2" />
+            <span>Previous 30 Days</span>
           </Button>
           <Button 
             variant="outline" 
-            className="w-full justify-start text-assistant-text"
+            className="w-full justify-start text-assistant-text text-xs h-8"
           >
-            <Settings size={16} className="mr-2" />
-            <span className="text-sm">Settings</span>
+            <Settings size={14} className="mr-2" />
+            <span>Settings</span>
           </Button>
         </div>
       </aside>
