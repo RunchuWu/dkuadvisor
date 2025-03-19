@@ -40,8 +40,15 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: '1',
-      title: 'New conversation',
-      messages: [],
+      title: 'Welcome',
+      messages: [
+        {
+          id: 'welcome-message',
+          content: "Hi there! I'm your AI assistant powered by DeepSeek AI. How can I help you today?",
+          role: 'assistant',
+          timestamp: new Date(),
+        }
+      ],
       timestamp: new Date(),
     },
   ]);
@@ -55,7 +62,14 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const newConversation: Conversation = {
       id: newId,
       title: 'New conversation',
-      messages: [],
+      messages: [
+        {
+          id: 'welcome-message',
+          content: "Hi there! I'm your AI assistant powered by DeepSeek AI. How can I help you today?",
+          role: 'assistant',
+          timestamp: new Date(),
+        }
+      ],
       timestamp: new Date(),
     };
     
@@ -76,9 +90,12 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setConversations((prev) => 
       prev.map((conv) => {
         if (conv.id === currentConversationId) {
-          // Update conversation title if this is the first user message
-          const isFirstMessage = conv.messages.length === 0 && role === 'user';
-          const title = isFirstMessage ? content.substring(0, 30) + (content.length > 30 ? '...' : '') : conv.title;
+          // Update conversation title if this is the first user message and the only message is the welcome message
+          const isFirstUserMessage = conv.messages.length === 1 && 
+                                    conv.messages[0].id === 'welcome-message' && 
+                                    role === 'user';
+          
+          const title = isFirstUserMessage ? content.substring(0, 30) + (content.length > 30 ? '...' : '') : conv.title;
           
           return {
             ...conv,

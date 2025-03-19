@@ -11,6 +11,53 @@ interface ChatMessageProps {
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
 
+  // Function to format code blocks
+  const formatContent = (content: string) => {
+    // Split by code block markers
+    const parts = content.split(/(```[a-zA-Z]*\n[\s\S]*?\n```)/g);
+    
+    return parts.map((part, index) => {
+      // Check if this part is a code block
+      if (part.startsWith('```') && part.endsWith('```')) {
+        // Extract language and code
+        const match = part.match(/```([a-zA-Z]*)\n([\s\S]*?)\n```/);
+        if (match) {
+          const [, language, code] = match;
+          return (
+            <div key={index} className="bg-gray-800 text-white rounded-md p-3 my-2 overflow-x-auto">
+              <pre className="text-sm">
+                <code>{code}</code>
+              </pre>
+            </div>
+          );
+        }
+      }
+      
+      // Parse for inline code (wrapped in backticks)
+      const inlineParts = part.split(/(`[^`]+`)/g);
+      return (
+        <React.Fragment key={index}>
+          {inlineParts.map((inlinePart, i) => {
+            if (inlinePart.startsWith('`') && inlinePart.endsWith('`')) {
+              return (
+                <code key={i} className="bg-gray-100 text-assistant-text px-1 rounded font-mono text-sm">
+                  {inlinePart.slice(1, -1)}
+                </code>
+              );
+            }
+            // Handle line breaks for normal text
+            return <span key={i}>{inlinePart.split('\n').map((line, j) => (
+              <React.Fragment key={j}>
+                {line}
+                {j < inlinePart.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}</span>;
+          })}
+        </React.Fragment>
+      );
+    });
+  };
+
   return (
     <div 
       className={cn(
@@ -29,9 +76,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div className="flex-1 prose">
           <div 
             className="text-assistant-text leading-relaxed"
-            style={{ whiteSpace: 'pre-wrap' }}
           >
-            {message.content}
+            {formatContent(message.content)}
           </div>
         </div>
       </div>
