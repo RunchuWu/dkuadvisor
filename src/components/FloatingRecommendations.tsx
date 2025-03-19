@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useChatContext } from '@/context/ChatContext';
+import { cn } from '@/lib/utils';
 
 const recommendations = [
   {
@@ -38,7 +39,12 @@ const FloatingRecommendations: React.FC = () => {
         <button
           key={recommendation.id}
           onClick={() => handleRecommendationClick(recommendation.text)}
-          className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 animate-float-up"
+          className={cn(
+            "bg-white/80 dark:bg-gray-800/80 p-4 rounded-lg shadow-md dark:shadow-gray-900/30",
+            "hover:shadow-lg dark:hover:shadow-gray-900/50 transition-all duration-300",
+            "backdrop-blur-sm border border-gray-100 dark:border-gray-700",
+            "animate-float-up"
+          )}
           style={{ 
             animationDelay: recommendation.delay,
             animationDuration: `${3 + (recommendation.id % 2) * 0.5}s`

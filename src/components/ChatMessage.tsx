@@ -46,12 +46,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               );
             }
             // Handle line breaks for normal text
-            return <span key={i}>{inlinePart.split('\n').map((line, j) => (
-              <React.Fragment key={j}>
-                {line}
-                {j < inlinePart.split('\n').length - 1 && <br />}
-              </React.Fragment>
-            ))}</span>;
+            return (
+              <span key={i}>
+                {inlinePart.split('\n').map((line, j) => (
+                  <React.Fragment key={j}>
+                    {line}
+                    {j < inlinePart.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
+              </span>
+            );
           })}
         </React.Fragment>
       );
