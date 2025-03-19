@@ -46,7 +46,7 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-sidebar">
       <ChatSidebar 
         isSidebarOpen={isSidebarOpen} 
         setIsSidebarOpen={setIsSidebarOpen} 
@@ -54,7 +54,7 @@ const ChatInterface: React.FC = () => {
       
       <main className={cn(
         "flex-1 flex flex-col h-screen relative bg-white transition-all duration-300",
-        isSidebarOpen && !isMobile ? "ml-[240px]" : ""
+        // Remove the margin-left that was creating the white space
       )}>
         <ChatHeader setIsSidebarOpen={setIsSidebarOpen} />
         
