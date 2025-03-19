@@ -13,7 +13,7 @@ import DukeRobot from '@/components/DukeRobot';
 
 const ChatInterface: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { conversations, currentConversationId, isMessageLoading, sendMessage } = useChatContext();
+  const { conversations, currentConversationId, isMessageLoading, addMessage } = useChatContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   
@@ -42,7 +42,7 @@ const ChatInterface: React.FC = () => {
   }, [isMobile]);
 
   const handleSuggestionClick = (suggestion: string) => {
-    sendMessage(suggestion);
+    addMessage(suggestion, 'user');
   };
 
   return (
