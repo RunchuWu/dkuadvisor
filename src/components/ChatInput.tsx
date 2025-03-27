@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 const ChatInput: React.FC = () => {
   const [input, setInput] = useState('');
-  const { addMessage, isMessageLoading, setIsMessageLoading, generateAIResponse } = useChatContext();
+  const { addMessage, isMessageLoading, setIsMessageLoading } = useChatContext();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [apiKey, setApiKey] = useState<string>(localStorage.getItem('deepseekApiKey') || '');
   const [showApiKeyInput, setShowApiKeyInput] = useState<boolean>(!localStorage.getItem('deepseekApiKey'));
@@ -26,6 +26,37 @@ const ChatInput: React.FC = () => {
     adjustTextareaHeight();
   }, [input]);
 
+  const callDeepseekAPI = async (message: string) => {
+    try {
+      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'user', content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to get response from DeepSeek API');
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('Error calling DeepSeek API:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedInput = input.trim();
@@ -42,11 +73,11 @@ const ChatInput: React.FC = () => {
     addMessage(trimmedInput, 'user');
     setInput('');
 
-    // Get AI response using RAG
+    // Get AI response
     setIsMessageLoading(true);
     
     try {
-      const aiResponse = await generateAIResponse(trimmedInput);
+      const aiResponse = await callDeepseekAPI(trimmedInput);
       addMessage(aiResponse, 'assistant');
     } catch (error) {
       toast.error((error as Error).message || "Failed to get response from DeepSeek");
@@ -70,11 +101,11 @@ const ChatInput: React.FC = () => {
   };
 
   return (
-    <div className="px-4 py-4 border-t border-assistant-border dark:border-gray-700 glassmorphism sticky bottom-0">
+    <div className="px-4 py-4 border-t border-assistant-border glassmorphism sticky bottom-0">
       {showApiKeyInput ? (
         <div className="max-w-3xl mx-auto mb-4">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-assistant-border dark:border-gray-700">
-            <label htmlFor="apiKey" className="block text-sm font-medium mb-2 dark:text-gray-200">
+          <div className="bg-white p-4 rounded-lg border border-assistant-border">
+            <label htmlFor="apiKey" className="block text-sm font-medium mb-2">
               Enter your DeepSeek API Key
             </label>
             <div className="flex gap-2">
@@ -83,14 +114,14 @@ const ChatInput: React.FC = () => {
                 id="apiKey"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="flex-1 border border-assistant-border dark:border-gray-700 rounded-lg py-2 px-3 focus:outline-none focus:ring-1 focus:ring-assistant-accent dark:focus:ring-blue-500 focus:border-assistant-accent dark:focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="flex-1 border border-assistant-border rounded-lg py-2 px-3 focus:outline-none focus:ring-1 focus:ring-assistant-accent focus:border-assistant-accent"
                 placeholder="sk-..."
               />
               <Button onClick={saveApiKey} disabled={!apiKey.trim()}>
                 Save
               </Button>
             </div>
-            <p className="text-xs text-assistant-placeholder dark:text-gray-400 mt-2">
+            <p className="text-xs text-assistant-placeholder mt-2">
               Your API key is stored locally in your browser and never sent to our servers.
             </p>
           </div>
@@ -98,7 +129,7 @@ const ChatInput: React.FC = () => {
       ) : (
         <button
           onClick={() => setShowApiKeyInput(true)}
-          className="text-xs text-assistant-placeholder dark:text-gray-500 hover:text-assistant-text dark:hover:text-gray-300 underline mb-2 mx-auto block"
+          className="text-xs text-assistant-placeholder hover:text-assistant-text underline mb-2 mx-auto block"
         >
           Change API Key
         </button>
@@ -114,8 +145,8 @@ const ChatInput: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask about DKU courses..."
-            className="flex-1 resize-none overflow-hidden bg-white dark:bg-gray-800 border border-assistant-border dark:border-gray-700 rounded-lg py-3 pl-4 pr-12 focus:outline-none focus:ring-1 focus:ring-assistant-accent dark:focus:ring-blue-500 focus:border-assistant-accent dark:focus:border-blue-500 transition-shadow text-sm min-h-[52px] max-h-[200px] dark:text-white"
+            placeholder="Ask anything..."
+            className="flex-1 resize-none overflow-hidden bg-white border border-assistant-border rounded-lg py-3 pl-4 pr-12 focus:outline-none focus:ring-1 focus:ring-assistant-accent focus:border-assistant-accent transition-shadow text-sm min-h-[52px] max-h-[200px]"
             rows={1}
           />
           
@@ -140,7 +171,7 @@ const ChatInput: React.FC = () => {
               <Button 
                 type="button" 
                 size="sm" 
-                className="w-8 h-8 p-0 rounded-full bg-transparent hover:bg-assistant-hover dark:hover:bg-gray-700 text-assistant-text dark:text-gray-400"
+                className="w-8 h-8 p-0 rounded-full bg-transparent hover:bg-assistant-hover text-assistant-text"
               >
                 <Mic size={16} />
               </Button>
@@ -148,8 +179,8 @@ const ChatInput: React.FC = () => {
           </div>
         </div>
         
-        <p className="text-xs text-assistant-placeholder dark:text-gray-400 text-center mt-2">
-          AI can make mistakes. Verify important course information.
+        <p className="text-xs text-assistant-placeholder text-center mt-2">
+          AI can make mistakes. Verify important information.
         </p>
       </form>
     </div>
