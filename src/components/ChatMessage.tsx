@@ -3,6 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Message } from '@/context/ChatContext';
 import { User, Bot } from 'lucide-react';
+import CourseResults from './CourseResults';
 
 interface ChatMessageProps {
   message: Message;
@@ -58,6 +59,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     });
   };
 
+  // Parse markdown-like syntax for bold (**text**) and italic (*text*)
+  const formatRichText = (content: string) => {
+    // Format bold text
+    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Format italic text
+    content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    return (
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    );
+  };
+
   return (
     <div 
       className={cn(
@@ -79,6 +92,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           >
             {formatContent(message.content)}
           </div>
+          
+          {/* Show course cards for assistant messages with course data */}
+          {!isUser && message.coursesData && message.coursesData.length > 0 && (
+            <div className="mt-4">
+              <CourseResults courses={message.coursesData} />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ import DukeRobot from '@/components/DukeRobot';
 
 const ChatInterface: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { conversations, currentConversationId, isMessageLoading, addMessage } = useChatContext();
+  const { conversations, currentConversationId, isMessageLoading, processUserMessage } = useChatContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   
@@ -21,12 +21,12 @@ const ChatInterface: React.FC = () => {
   const currentConversation = conversations.find(c => c.id === currentConversationId);
   const messages = currentConversation?.messages || [];
 
-  // Suggestions for quick prompts
+  // Suggestions for quick prompts with course-related queries
   const suggestions = [
     "Tell me about registration schedules",
-    "Dance courses",
-    "A class about nutrition",
-    "Intro computer science class"
+    "What dance courses are available?",
+    "Looking for a class about nutrition",
+    "Show me intro computer science classes"
   ];
   
   // Auto-scroll to bottom when messages change
@@ -42,7 +42,7 @@ const ChatInterface: React.FC = () => {
   }, [isMobile]);
 
   const handleSuggestionClick = (suggestion: string) => {
-    addMessage(suggestion, 'user');
+    processUserMessage(suggestion);
   };
 
   return (
@@ -54,7 +54,6 @@ const ChatInterface: React.FC = () => {
       
       <main className={cn(
         "flex-1 flex flex-col h-screen relative bg-white transition-all duration-300",
-        // Remove the margin-left that was creating the white space
       )}>
         <ChatHeader setIsSidebarOpen={setIsSidebarOpen} />
         
@@ -87,7 +86,7 @@ const ChatInterface: React.FC = () => {
               
               <h2 className="text-3xl font-duke font-bold mb-2 animate-fade-in text-duke-blue">How can I help you today?</h2>
               <p className="text-assistant-placeholder mb-6 max-w-md animate-fade-in">
-                Ask me anything about Duke University or start a conversation. I'm here to assist with information, ideas, and more.
+                Ask me anything about Duke University courses or start a conversation. I'm here to assist with information about classes, instructors, schedules, and more.
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl animate-fade-in">
@@ -111,7 +110,7 @@ const ChatInterface: React.FC = () => {
               {messages.length === 0 && <DukeRobot />}
             </div>
             <div className="flex-1">
-              <ChatInput />
+              <ChatInput onSendMessage={processUserMessage} />
             </div>
           </div>
         </div>
